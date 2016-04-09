@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Living City | Mobile Computing 2016</title>
+    <link rel="stylesheet" href="js/chartist.min.css">
+    <meta charset="UTF-8" /> 
+    <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    
+  </head>
+  <body>
+    <!-- Site content goes here !-->
+    <script src="js/chartist.min.js"></script>
+
+<style>
+    #wrap {
+   width:100%;
+   margin:0 auto;
+}
+#left_col {
+   float:left;
+   width:50%;
+}
+#right_col {
+   float:right;
+   width:50%;
+}
+
+body {
+    background-color:  #cceeff;
+}
+
+    
+    
+</style>
+
+<center> <h2>Aveiro, 06-04-2016</h2> </center>
+
+<div id="wrap">
+    <div id="left_col">
+           <center> <h2>Temperature</h2> </center>
+    <div class="ct-chart ct-golden-section" id="temp"></div>
+
+
+    </div>
+    <div id="right_col">
+        <center><h2>Humidity</h2></center>
+    <div class="ct-chart ct-golden-section" id="humd"></div>
+    </div>
+</div>
+
+<center>
+<a href="index.html"
+    <button type="button" herf class="btn btn-primary">Back</button>
+</a>
+</center>
+
+
+
+<script>
+
+
+
+    var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+    };
+    
+
+    
+    var arrTemp = []; 
+    var arrHum = []; 
+    var arrHor = []; 
+    
+    var city = getUrlParameter('city'); 
+
+    var ref = new Firebase("https://livingcityapp.firebaseio.com/"+getUrlParameter('year')+"-"+getUrlParameter('month')+"-"+getUrlParameter('day'));
+    
+
+         
+    // Retrieve new posts as they are added to our database
+    ref.on("child_added", function(snapshot, prevChildKey) {
+    var newPost = snapshot.val();
+    
+    
+  // if (parseFloat(newPost.Latitude) > 38 && parseFloat(newPost.Latitude)< 41 && parseFloat(newPost.Longitude) >-8 ){
+    //console.log(newPost.Hora.split(':')[1]); 
+    arrTemp.push(parseInt(newPost.Temperature)); 
+    arrHum.push(parseInt(newPost.Humidade)); 
+    arrHor.push(newPost.Hora.split(':')[1]); 
+   // }
+
+    
+    });
+
+    // Initialize a Line chart in the container with the ID chart1
+
+    new Chartist.Line('#temp', {
+    labels: arrHor,
+    series: [
+        [],[],
+        arrTemp
+    ]
+    }, {
+    fullWidth: true,
+    chartPadding: {
+        right: 40
+    }
+    });
+
+    new Chartist.Line('#humd', {
+    labels: arrHor,
+    series: [
+        arrHum
+    ]
+    }, {
+    fullWidth: true,
+    chartPadding: {
+        right: 40
+    }
+    });
+
+
+
+
+
+
+</script>
+
+  </body>
+</html>
